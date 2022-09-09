@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+
+  mysql:
+    image: mysql:8.0.30
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: verysecret
+      MYSQL_DATABASE: yt_go_auth
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "33061:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+volumes:
+  mysql:
