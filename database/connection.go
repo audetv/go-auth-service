@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 func Connect() {
 
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
@@ -15,6 +17,8 @@ func Connect() {
 	if err != nil {
 		panic("could not connect to the database")
 	}
+
+	DB = connection
 
 	connection.AutoMigrate(&entities.User{})
 }
