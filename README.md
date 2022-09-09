@@ -16,3 +16,11 @@ https://gorm.io/
 go get -u gorm.io/gorm
 go get -u gorm.io/driver/mysql
 ```
+
+Starting mysql service - docker container
+
+`docker-compose up -d`
+
+Stop mysql service
+
+`docker-compose down`
