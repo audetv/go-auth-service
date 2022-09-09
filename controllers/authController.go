@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/audetv/go-auth-service/database"
 	"github.com/audetv/go-auth-service/entities"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -14,11 +15,14 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
+
 	user := entities.User{
 		Name:     data["name"],
 		Email:    data["email"],
 		Password: password,
 	}
+
+	database.DB.Create(&user)
 
 	return c.JSON(user)
 }
