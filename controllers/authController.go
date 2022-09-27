@@ -71,7 +71,7 @@ func Login(c *fiber.Ctx) error {
 
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    strconv.Itoa(int(user.Id)),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 60)), // 1 minute
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute)), // 1 minute
 	})
 
 	token, err := claims.SignedString([]byte(SecretKey))
@@ -86,7 +86,7 @@ func Login(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24),
+		Expires:  time.Now().Add(time.Minute),
 		HTTPOnly: true,
 	}
 
