@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/audetv/go-auth-service/database"
 	"github.com/audetv/go-auth-service/entities"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"strconv"
@@ -69,9 +69,9 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    strconv.Itoa(int(user.Id)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), // 1 day
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 60)), // 1 minute
 	})
 
 	token, err := claims.SignedString([]byte(SecretKey))
@@ -100,7 +100,7 @@ func Login(c *fiber.Ctx) error {
 func User(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
 
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SecretKey), nil
 	})
 
@@ -111,7 +111,7 @@ func User(c *fiber.Ctx) error {
 		})
 	}
 
-	claims := token.Claims.(*jwt.StandardClaims)
+	claims := token.Claims.(*jwt.RegisteredClaims)
 
 	var user entities.User
 
