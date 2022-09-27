@@ -6,6 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"strconv"
 	"time"
 )
@@ -25,6 +26,16 @@ func Register(c *fiber.Ctx) error {
 		Name:     data["name"],
 		Email:    data["email"],
 		Password: password,
+	}
+
+	database.DB.Where("email = ?", data["email"]).First(&user)
+
+	if user.Id != 0 {
+		log.Printf("Error: %s user already exists", data["email"])
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "user already exists",
+		})
 	}
 
 	database.DB.Create(&user)
